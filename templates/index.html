@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <title>כלי לניתוח חוזים</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='accessibility.js') }}"></script>
+    <h1>ניתוח חוזה משפטי - והתאמתו להלכה</h1>
+</head>
+<body>
+    <!-- קישור עם אייקון יציאה -->
+    <a href="{{ url_for('logout') }}" style="float: right;">
+        <img src="{{ url_for('static', filename='exit-icon.png') }}" alt="יציאה" style="width: 35px; height: 35px; margin-left: 5px;">
+    </a>
+
+    <form action="/analyze" method="post" enctype="multipart/form-data">
+        <input type="file" name="contract" required>
+        <button type="submit">נתח</button>
+    </form>
+
+    {% if content %}
+        <h2>תוכן החוזה:</h2>
+        <div class="contract-content">
+            <pre>{{ content }}</pre>
+        </div>
+        <h2>מילות מפתח שנמצאו:</h2>
+        <ul>
+            {% for keyword in keywords %}
+                <li>{{ keyword }}</li>
+            {% endfor %}
+        </ul>
+        <h2>המלצות לתיקון:</h2>
+        <ul>
+            {% for recommendation in recommendations %}
+                <li>{{ recommendation }}</li>
+            {% endfor %}
+        </ul>
+        
+        {% if updated_file %}
+            <a href="{{ url_for('static', filename=updated_file) }}" download class="download-btn">הורד את החוזה המתוקן</a>
+        {% endif %}
+    {% endif %}
+
+    <!-- Accessibility Floating Button -->
+    <div id="accessibility-button" class="floating-button" onclick="toggleAccessibilityMenu()">♿</div>
+
+    <!-- Accessibility Menu -->
+    <div id="accessibility-menu" class="accessibility-menu hidden">
+        <ul>
+            <li onclick="increaseFontSize()">הגדלת טקסט</li>
+            <li onclick="decreaseFontSize()">הקטנת טקסט</li>
+            <li onclick="toggleHighContrast()">מצב ניגודיות גבוהה</li>
+            <li onclick="highlightLinks()">הדגשת קישורים</li>
+            <li onclick="toggleBlackCursor()">סמן שחור</li>
+            <li onclick="enlargeCursor()">הגדלת סמן עכבר</li>
+            <li onclick="highlightHeadings()">הדגשת כותרות</li>
+            <li onclick="toggleGrayscale()">מצב שחור-לבן</li>
+            <li onclick="changeFont('Times New Roman')">שינוי גופן ל-Times New Roman</li>
+            <li onclick="resetAccessibility()">איפוס נגישות</li>
+        </ul>
+    </div>
+
+    <div class="keyword-button-wrapper">
+        <!-- כפתור לפתיחת חלון הוספת מילות מפתח -->
+        <button id="openModalButton">הוספת מילות מפתח</button>
+
+        <!-- מבנה ה-modal -->
+        <div id="keywordModal" class="modal">
+            <div class="modal-content">
+                <span class="close-button">&times;</span>
+                <h3>הוסף מילת מפתח</h3>
+                <form id="keywordForm">
+                    <label for="name">שם:</label>
+                    <input type="text" id="name" name="name" required>
+                    
+                    <label for="keyword">מילת מפתח חדשה:</label>
+                    <input type="text" id="keyword" name="keyword" required>
+                    
+                    <label for="reason">סיבה:</label>
+                    <textarea id="reason" name="reason" required></textarea>
+                    
+                    <button type="submit">שלח</button>
+                </form>
+                <p id="successMessage" style="display: none; color: green;">הבקשה התקבלה ותיענה בימים הקרובים.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById('keywordModal');
+        const openModalButton = document.getElementById('openModalButton');
+        const closeButton = document.querySelector('.close-button');
+        const successMessage = document.getElementById('successMessage');
+        const form = document.getElementById('keywordForm');
+
+        // פתיחת ה-modal
+        openModalButton.addEventListener('click', () => {
+            modal.style.display = 'block';
+            successMessage.style.display = 'none';
+        });
+
+        // סגירת ה-modal
+        closeButton.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        // סגירת ה-modal בלחיצה מחוץ לתוכן
+        window.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+
+        // טיפול בטופס באמצעות AJAX
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const formData = new FormData(form);
+
+            fetch('/add_keyword', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    successMessage.style.display = 'block';
+                    form.reset();
+                } else {
+                    alert("שגיאה בשליחת הבקשה. נסה שוב.");
+                }
+            })
+            .catch(error => {
+                alert("שגיאה בשליחת הבקשה.");
+                console.error(error);
+            });
+        });
+    </script>
+
+</body>
+</html>
+
