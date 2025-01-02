@@ -345,3 +345,28 @@ li {
     }
 }
 
+/* הפוטר */
+.accessibility-footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 14px;
+    position: fixed; /* דאג שהפוטר יישאר בתחתית כל הזמן */
+    bottom: 0; /* תכניס אותו לתחתית הדף */
+    left: 0; /* תוודא שהוא מתחיל מהקצה השמאלי */
+    width: 100%; /* יכסה את כל הרוחב */
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* עיצוב הקישור */
+.accessibility-footer a {
+    color: #4caf50;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.accessibility-footer a:hover {
+    text-decoration: underline;
+    color: #76ff03;
+}
