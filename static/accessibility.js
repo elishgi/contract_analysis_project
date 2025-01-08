@@ -54,6 +54,18 @@ function changeFont(font) {
     document.body.style.fontFamily = font; // משנה את משפחת הגופנים של גוף העמוד לערך שהתקבל כפרמטר
 }
 
+// פונקציה להגדלת כל התמונות בעמוד ב-20%
+function enlargeImages() {
+    const images = document.querySelectorAll('img'); // בוחר את כל האלמנטים מסוג תמונה בעמוד
+    images.forEach(image => image.style.transform = 'scale(1.2)'); // מגדיל כל תמונה בקנה מידה של 1.2
+}
+
+
+// פונקציה לשינוי הריווח בין השורות
+function changeLineSpacing(spacing) {
+    document.body.style.lineHeight = spacing; // מגדיר את ריווח השורות של כל העמוד
+}
+
 // מאפס את כל הגדרות הנגישות
 function resetAccessibility() {
     document.body.style.fontSize = ''; // מאפס את גודל הגופן לברירת המחדל
@@ -66,11 +78,13 @@ function resetAccessibility() {
         heading.style.backgroundColor = ''; // מאפס את צבע הרקע
         heading.style.color = ''; // מאפס את צבע הטקסט
     });
-}
 
-// מציג הודעה מוקפצת שהאפשרות בפיתוח
-function showComingSoonMessage() {
-    alert("אופציה זו נמצאת כרגע בפיתוח ותהיה זמינה בקרוב. תודה על הסבלנות!"); // מציג הודעה מוקפצת עם טקסט מוגדר מראש
+    // איפוס גודל התמונות
+    const images = document.querySelectorAll('img'); // בוחר את כל התמונות
+    images.forEach(image => image.style.transform = 'scale(1)'); // מחזיר את התמונות לגודל המקורי
+
+    // איפוס ריווח השורות
+    document.body.style.lineHeight = ''; // מאפס את ריווח השורות לברירת המחדל
 }
 
 
